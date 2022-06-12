@@ -2,6 +2,7 @@ from dcim.choices import LinkStatusChoices
 from dcim.models import Interface
 from ipam.models import VLAN
 from netbox.forms import NetBoxModelCSVForm
+from tenancy.models import Tenant
 from utilities.forms import CSVChoiceField, CSVModelChoiceField, SlugField
 from wireless.choices import *
 from wireless.models import *
@@ -34,6 +35,12 @@ class WirelessLANCSVForm(NetBoxModelCSVForm):
         to_field_name='name',
         help_text='Assigned group'
     )
+    tenancy = CSVModelChoiceField(
+        queryset=Tenant.objects.all(),
+        to_field_name='name',
+        required=False,
+        help_text='Assigned tenant'
+    )
     vlan = CSVModelChoiceField(
         queryset=VLAN.objects.all(),
         required=False,
@@ -53,7 +60,7 @@ class WirelessLANCSVForm(NetBoxModelCSVForm):
 
     class Meta:
         model = WirelessLAN
-        fields = ('ssid', 'group', 'description', 'vlan', 'auth_type', 'auth_cipher', 'auth_psk')
+        fields = ('ssid', 'group', 'tenancy', 'description', 'vlan', 'auth_type', 'auth_cipher', 'auth_psk')
 
 
 class WirelessLinkCSVForm(NetBoxModelCSVForm):

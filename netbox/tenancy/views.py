@@ -7,6 +7,7 @@ from ipam.models import Aggregate, IPAddress, IPRange, Prefix, VLAN, VRF, ASN
 from netbox.views import generic
 from utilities.utils import count_related
 from virtualization.models import VirtualMachine, Cluster
+from wireless.models import WirelessLAN
 from . import filtersets, forms, tables
 from .models import *
 
@@ -114,6 +115,7 @@ class TenantView(generic.ObjectView):
             'cluster_count': Cluster.objects.restrict(request.user, 'view').filter(tenant=instance).count(),
             'cable_count': Cable.objects.restrict(request.user, 'view').filter(tenant=instance).count(),
             'asn_count': ASN.objects.restrict(request.user, 'view').filter(tenant=instance).count(),
+            'wirelesslan_count': WirelessLAN.objects.restrict(request.user, 'view').filter(tenancy=instance).count(),
         }
 
         return {

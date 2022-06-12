@@ -4,6 +4,7 @@ from wireless.choices import *
 from wireless.models import *
 from dcim.choices import InterfaceTypeChoices
 from dcim.models import Interface
+from tenancy.models import Tenant
 from utilities.testing import APITestCase, APIViewTestCases, create_test_device
 
 
@@ -67,6 +68,8 @@ class WirelessLANTest(APIViewTestCases.APIViewTestCase):
         )
         WirelessLAN.objects.bulk_create(wireless_lans)
 
+        tenant = Tenant.objects.create(name='Tenant 1', slug='tenant-1')
+
         cls.create_data = [
             {
                 'ssid': 'WLAN4',
@@ -76,6 +79,7 @@ class WirelessLANTest(APIViewTestCases.APIViewTestCase):
             {
                 'ssid': 'WLAN5',
                 'group': groups[1].pk,
+                'tenancy': tenant.pk,
                 'auth_type': WirelessAuthTypeChoices.TYPE_WPA_PERSONAL,
             },
             {

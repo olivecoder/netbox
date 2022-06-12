@@ -1,6 +1,7 @@
 from dcim.models import Device, Interface, Location, Region, Site, SiteGroup
 from ipam.models import VLAN, VLANGroup
 from netbox.forms import NetBoxModelForm
+from tenancy.models import Tenant
 from utilities.forms import DynamicModelChoiceField, SlugField, StaticSelect
 from wireless.models import *
 
@@ -30,7 +31,11 @@ class WirelessLANForm(NetBoxModelForm):
         queryset=WirelessLANGroup.objects.all(),
         required=False
     )
-
+    tenancy = DynamicModelChoiceField(
+        queryset=Tenant.objects.all(),
+        required=False,
+        label='Tenant'
+    )
     region = DynamicModelChoiceField(
         queryset=Region.objects.all(),
         required=False,
@@ -77,7 +82,7 @@ class WirelessLANForm(NetBoxModelForm):
     )
 
     fieldsets = (
-        ('Wireless LAN', ('ssid', 'group', 'description', 'tags')),
+        ('Wireless LAN', ('ssid', 'group', 'tenancy', 'description', 'tags',)),
         ('VLAN', ('region', 'site_group', 'site', 'vlan_group', 'vlan',)),
         ('Authentication', ('auth_type', 'auth_cipher', 'auth_psk')),
     )
@@ -85,8 +90,8 @@ class WirelessLANForm(NetBoxModelForm):
     class Meta:
         model = WirelessLAN
         fields = [
-            'ssid', 'group', 'description', 'region', 'site_group', 'site', 'vlan_group', 'vlan', 'auth_type',
-            'auth_cipher', 'auth_psk', 'tags',
+            'ssid', 'group', 'tenancy', 'description', 'region', 'site_group', 'site',
+            'vlan_group', 'vlan', 'auth_type', 'auth_cipher', 'auth_psk', 'tags',
         ]
         widgets = {
             'auth_type': StaticSelect,

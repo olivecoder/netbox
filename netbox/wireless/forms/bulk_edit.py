@@ -3,6 +3,7 @@ from django import forms
 from dcim.choices import LinkStatusChoices
 from ipam.models import VLAN
 from netbox.forms import NetBoxModelBulkEditForm
+from tenancy.models import Tenant
 from utilities.forms import add_blank_choice, DynamicModelChoiceField
 from wireless.choices import *
 from wireless.constants import SSID_MAX_LENGTH
@@ -50,6 +51,11 @@ class WirelessLANBulkEditForm(NetBoxModelBulkEditForm):
     description = forms.CharField(
         required=False
     )
+    tenancy = DynamicModelChoiceField(
+        queryset=Tenant.objects.all(),
+        required=False,
+        label='Tenant'
+    )
     auth_type = forms.ChoiceField(
         choices=add_blank_choice(WirelessAuthTypeChoices),
         required=False
@@ -65,11 +71,11 @@ class WirelessLANBulkEditForm(NetBoxModelBulkEditForm):
 
     model = WirelessLAN
     fieldsets = (
-        (None, ('group', 'vlan', 'ssid', 'description')),
+        (None, ('group', 'tenancy', 'vlan', 'ssid', 'description')),
         ('Authentication', ('auth_type', 'auth_cipher', 'auth_psk')),
     )
     nullable_fields = (
-        'ssid', 'group', 'vlan', 'description', 'auth_type', 'auth_cipher', 'auth_psk',
+        'ssid', 'group', 'tenancy', 'vlan', 'description', 'tenant', 'auth_type', 'auth_cipher', 'auth_psk',
     )
 
 
